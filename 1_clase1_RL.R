@@ -28,3 +28,5 @@ pib=200+ 4*t + 2*t^2 + rnorm(n=200,mean=100,sd=50)
   
 mean(pib) ### para verificar valor
 
+#######
+
