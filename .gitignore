@@ -1,0 +1,7 @@
+###archivos ignorar
+
+.RData
+.Rhistory
+6_ACF_modelos_basicos.ipynb
+.Rproj.user
+R_muse2.Rproj
