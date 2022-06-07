@@ -18,3 +18,6 @@ pacf(lynx)
 
 acf(lynx, plot=F)
 pacf(lynx,plot=F)
+
+
+
