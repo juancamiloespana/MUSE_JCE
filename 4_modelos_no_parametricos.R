@@ -1,7 +1,18 @@
+library(smooth)
+library(forecast)
+### Leer datos ####
 
+df=read.csv("serie_ejemplos_excel.csv",sep=";",dec=",")
+names(df)="valor" ## corregir nombre variable
 
-url='https://raw.githubusercontent.com/juancamiloespana/MUSE_JCE/master/serie_ejemplos_excel.csv'
+##### medias móviles
 
+y=ts(df$valor, start=1950, frequency = 1)
 
+ma_y=sma(y,h=5,silent = F,interval=T, level=0.80) ## se ajusta un modelo de medias móviles
+ma_y2=sma(y,h=5,silent = F,interval=T, level=0.90,order=6) ## se ajusta un modelo de medias móviles
 
-df=read.csv(url,sep=";",dec=",")
+class(ma_y)
+summary(ma_y) 
+ma_y$forecast
+
