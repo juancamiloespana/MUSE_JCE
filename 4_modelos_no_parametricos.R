@@ -12,7 +12,8 @@ y=ts(df$valor, start=1950, frequency = 1)
 ma_y=sma(y,h=5,silent = F,interval=T, level=0.80) ## se ajusta un modelo de medias móviles
 ma_y2=sma(y,h=5,silent = F,interval=T, level=0.90,order=6) ## se ajusta un modelo de medias móviles
 
-class(ma_y)
+
 summary(ma_y) 
+summary(ma_y2)
 ma_y$forecast
 
