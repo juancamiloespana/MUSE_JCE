@@ -1,4 +1,9 @@
 library(forecast)
+library(fpp)
+
+
+
+## paquete para extraer serie de tiempo ausair
 
 
 df=read.csv("serie_ejemplos_excel.csv",sep=";",dec=",")
@@ -35,5 +40,28 @@ plot(se_h)
 summary(se_h)
 
 
+
+#####SE holt_winters #######
+
+
+austourists
+
+frequency(austourists)
+start(austourists)
+plot(austourists)
+
+aus=window(austourists,start=c(2007,1))
+
+plot(aus)
+
+par(mfrow=c(2,1))
+mod=hw(austourists) ### ajustar holt y winters aditivo
+plot(mod)
+
+mod2=hw(austourists,seasonal="multiplicative") ## ajustar holt y winters multiplicativo
+plot(mod2)
+
+summary(mod)
+summary(mod2)
 
 
