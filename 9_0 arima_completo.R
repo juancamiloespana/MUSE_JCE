@@ -68,9 +68,74 @@ summary(modelo5)
 
 plot(model4)
 
+####### realizar 'marathon' y 'austa' #####
+#### con crossvalidation y comparando con otra técnicas #####
+
+
+####1. Validar si es necesaria transformación box y cox
+
+plot(marathon)
+
 ####
 
+par(mfrow=c(1,2))
 
+plot(marathon)
+l=BoxCox.lambda(marathon,lower=-7, upper=5)
+
+st_m=BoxCox(marathon,0)
+plot(st_m)
+
+ndiffs(st_m)
+
+st_md=diff(st_m,differences = 1)
+
+plot(st_md)
+
+ggtsdisplay(st_md)
+
+
+mod=auto.arima(marathon,lambda='auto', stepwise = F, 
+               approximation = F, max.order=10, trace=T)
+
+summary(mod)
+
+mod2=Arima(marathon,order=c(2,1,1),lambda='auto')
+summary(mod2)
+
+par(mfrow=c(1,2))
+plot(forecast(mod))
+plot(forecast(mod2))
+
+
+
+arima_f=function(x,h){
+  
+  Arima(x,order=c(2,1,1),lambda='auto')%>%
+    forecast::forecast(h=h)
+}
+
+e=tsCV(marathon,arima_f,h=10)
+
+eh1=e[,2]
+mape=mean(abs(eh1/marathon),na.rm=T)
+
+
+#######
+
+ggtsdisplay(st_md)
+ggtsdisplay(st_m)
+
+mod2=Arima(marathon,order=c(2,1,3), lambda=0)
+mod2$lambda
+summary(mod2)
+
+plot(diff(austa))
+
+ggtsdisplay(diff(austa))
+
+
+auto.arima(austa, trace=T)
 
 
 
