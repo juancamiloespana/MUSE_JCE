@@ -171,10 +171,99 @@ mean(marathon)
 
 eadj=elecequip %>% stl(s.window='periodic') %>% seasadj() 
 
-plot(eadj)
+ggtsdisplay(eadj)
+
+ur.kpss(eadj)%>%summary()
+
+ndiffs(eadj)
+
+
+
+eadj_d=diff(eadj,differences=1)
+ggtsdisplay(eadj_d)
+ur.kpss(eadj_d)%>%summary()
+
+ndiffs(eadj_d)
+
+
+### candidato (3,1,0)
+
+
+
+mod1=auto.arima(eadj, lambda=NULL , approximation=F, 
+                stepwise=F, trace=T, max.order = 10,seasonal=F)
+
+mod2=Arima(eadj,order=c(3,1,0))
+
+summary(mod1)
+summary(mod2)
+
+checkresiduals(mod1)
+checkresiduals(mod2)
+
+autoplot(forecast(mod1))
 
 
 
 
+arima_f=function(x,h){
+  
+  Arima(x,order=c(3,1,0))%>%
+    forecast::forecast(h=h)
+}
+
+e=tsCV(eadj,arima_f,h=20)
+pred1=eadj-e[,1]
+pred10=eadj-e[,10]
+
+plot(eadj, lty=1, lwd=3,ylim=c(50,130))
+plot(forecast(mod1))
+lines(pred1,col='red',lty=2, lwd=2)
+lines(pred10,col='blue',lty=3, lwd=2)
 
 
+
+######### proceso AR
+ar1 <- function(phi, n=100)
+{
+  y <- ts(numeric(n))
+  e <- rnorm(n)
+  for(i in 2:n)
+    y[i] <- phi*y[i-1] + e[i]
+  return(y)
+}
+
+phi=-0.9
+
+s1=ar1(phi)
+ggtsdisplay(s1)
+
+
+#### proceso MA ####
+
+ma1 <- function(theta, n=500)
+{
+  y <- ts(numeric(n))
+  e <- rnorm(n)
+  for(i in 2:n)
+    y[i] <- theta*e[i-1] + e[i]
+  return(y)
+}
+
+theta=0.99
+s2=ma1(theta)
+ggtsdisplay(s2)
+
+
+
+
+ar2 <- function(phi1, phi2, n=500)
+{
+  y <- ts(numeric(n))
+  e <- rnorm(n)
+  for(i in 3:n)
+    y[i] <- phi1*y[i-1] + phi2*y[i-2] + e[i]
+  return(y)
+}
+
+ggtsdisplay(ar2(-0.1,0.8))
