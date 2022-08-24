@@ -257,7 +257,7 @@ ggtsdisplay(s2)
 
 
 
-ar2 <- function(phi1, phi2, n=500)
+ar2 <- function(phi1, phi2, n=200)
 {
   y <- ts(numeric(n))
   e <- rnorm(n)
@@ -266,4 +266,31 @@ ar2 <- function(phi1, phi2, n=500)
   return(y)
 }
 
-ggtsdisplay(ar2(-0.1,0.8))
+ggtsdisplay(ar2(0.4,0.3))
+
+
+
+
+lynx%>%ur.kpss()%>%summary()
+
+
+mod1=auto.arima(lynx)
+summary(mod1)
+
+mod1=Arima(lynx,order=c(2,0,2))
+
+
+forecast(mod1,h=20)
+
+
+summary(mod1)
+
+arima_f=function(x,h){
+  
+  Arima(x,order=c(2,0,2))%>%
+    forecast::forecast(h=h)
+}
+
+e=tsCV(lynx,arima_f,h=15)
+
+mean(abs(e[,1])/lynx,na.rm=T)*100
