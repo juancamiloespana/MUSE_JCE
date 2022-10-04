@@ -8,10 +8,10 @@
 ##Estrategia de muestreo: Estimador de HT aplicado a un MAS sin reemplazo
 
 
-
-
 #install.packages("TeachingSampling")
 library(TeachingSampling) ### Librería con datos ejemplos Marco y Lucy
+
+
 
 
 data(BigLucy) ##Base de datos, marco de muestreo.
@@ -21,7 +21,7 @@ N <- dim(BigLucy)[1]  ##Tamaño población
 set.seed(123) ## para que los calculos sean iguales
 
 
-### 1. Piloto para estimación de muestra  ####
+### 1. Piloto para estimación de tamaño muestra  ####
 
 sam <- sample(N,100) ## extraer muestra piloto de 100 para varianza muestral y calculo de tamaño de muestra, la pilote se extrae por MAS.
 
@@ -32,14 +32,15 @@ Inc.pilot <- Income[sam] ###Variable de interés, ingresos.
 mean(Inc.pilot) ##Media de muestra piloto
 var(Inc.pilot) ## varianza muestra piloto
 
-## Confianza 95% = 1-alpha 
 
-z=qnorm(0.975)  ## Valor de la normal estandar para una probabilidad de 95%
+
+n_sd=2  ## Número de desviaciones para una probabilidad de 95%
 s=sd(Inc.pilot)
-c=25 ## ##Margen de error máximo aceptable (está en millones) lo define el investigador
+B=25 ## ##Margen de error máximo aceptable (está en millones) lo define el investigador
+D=(B/n_sd)^2
 
-no= (z^2)*(s^2)/(c^2) ## Muestra con población infinita
-n = no/(1+(no/N)) ## Muestra con población finita
+n=(N*s^2)/(((N-1)*D)+s^2)  ## Muestra con población finita dist normal
+
 
 
 ### 2. Extracción de muestra con tamaño definido  ####
@@ -54,8 +55,11 @@ attach(muestra)
 estima <- muestra[,c("Income", "Employees", "Taxes")] # base con las columnas para hacer estimación
 
 
-E.SI(N,n,estima)## función para hacer estimaciones MAS sin reemplazo con HT
+A=E.SI(N,n,estima)## función para hacer estimaciones MAS sin reemplazo del total con con HT
 
+
+
+#### tarea hacer una función para calcular tamaño muestral, definiendo si la distribución es normal o no y el número de desviaciones utilizadas
 
 
 
@@ -70,9 +74,9 @@ attach(BigLucy)
 
 set.seed(123)
 N <- dim(BigLucy)[1]
-a <- 40 ## definir número de grupos en los que se divide la población
+n=386 ## según MAS
+a <- floor(N/n) ## definir número de grupos en los que se divide la población
 
-n=floor(N/a)#numero de observaciones en cada grupo
 
 sam <- S.SY(N, a) ## función para extracción de muestra
 muestra <- BigLucy[sam,] ##Base con muestra de datos
@@ -94,10 +98,12 @@ E.SY(N, a, estima)  #Estimación muestreo sistemático HT sin reemplazo
 library(ggplot2)
 library(gridExtra)
 
-## se selecciona una variable categórica que influya en las de interés pero no con el orden. 
+## se selecciona una variable categórica que influya en las de interés. 
+### en este caso la variable selecionada es: Level que mide el tamaño de la empresa
 
 data(BigLucy)
 attach(BigLucy)
+N <- dim(BigLucy)[1]
 
 table(Level)
 
@@ -113,26 +119,62 @@ N1 <- summary(Level)[[1]]
 N2 <- summary(Level)[[2]]
 N3 <- summary(Level)[[3]]
 
-N <- c(N1,N2,N3)
-N
+Nst <- c(N1,N2,N3)
+Nst
 ## [1] 2905 25795 56596
 
-## Se calcula un tamaño de muestra y se divide proporcional a los valores poblacionales
+#### calcular alfas o proporciones de observaciones en cada estrato
+
+aB=N1/sum(N)
+aM=N2/sum(N)
+aS=N3/sum(N)
+
+a=c(aB,aM,aS)
+##### generar piloto y calcuar la varianza muestral de cada estrato
 
 
-n1 <- round(2000 * N1/sum(N))
-n2 <- round(2000 * N2/sum(N))
-n3 <- round(2000 * N3/sum(N))
-n <- c(n1,n2,n3)
-n
 
-sam <- S.STSI(Level, N, n)
+Big=BigLucy[BigLucy$Level=="Big",] ## filtrar por empresas BIG
+samBig=sample(N1,20) ### seleccionar una muestra para el piloto
+BigSam=Big[samBig,] ### seleccionarmuestra aleatoria de Big
+varB=var(BigSam$Income) ### calcular desv muestral para estrato Big
+
+Med=BigLucy[BigLucy$Level=="Medium",] ## filtrar por empresas M
+samMed=sample(N2,30) ### seleccionar una muestra para el piloto
+MedSam=Med[samMed,] ### seleccionarmuestra aleatoria de Big
+varM=var(MedSam$Income) ### calcular desv muestral para estrato Big
+
+Small=BigLucy[BigLucy$Level=="Small",] ## filtrar por empresas M
+samS=sample(N3,50) ### seleccionar una muestra para el piloto
+SmallSam=Small[samS,] ### seleccionarmuestra aleatoria de Big
+varS=var(SmallSam$Income) ### calcular desv muestral para estrato Big
+
+varst=c(varB,varM,varS)
+
+#### calcular tamaño muestral
+
+B=25
+D= 25^2/4 ## para la media
+
+num=  sum(Nst^2*varst*(1/a))
+den = (N^2)*D + sum(Nst*varst)
+
+n=num/den
+  
+## calcular  tamaño de muestra y se divide proporcional a los valores poblacionales
+  
+n1 <- round(n*aB)
+n2 <- round(n*aM)
+n3 <- round(n* aS)
+nst <- c(n1,n2,n3)
+
+sam <- S.STSI(Level, Nst, nst)
 muestra <- BigLucy[sam,]
 attach(muestra)
 
 
 estima <- data.frame(Income, Employees, Taxes)
-E.STSI(Level, N, n, estima)
+E.STSI(Level, Nst, nst, estima)
 
 
 #######################################  
@@ -146,13 +188,16 @@ attach(BigLucy)
 
 ## Se define una variable que facilite la toma de muestra (Geografía)
 
+M <- dim(BigLucy)[1]
 UI <- levels(BigLucy$Zone) ## se trata cada nivel de la variable definida como un individuo, se llaman UPM
 
 
 NI <- length(UI)  ##El nuevo tamaño muestral
 
 
-nI <- 10 ## tamaño  muestral de las UPM
+
+######
+nI <- 10 ## tamaño  muestral de las UPM para piloto
 
 samI <- S.SI(NI, nI) ## se utiliza MAS para la selección de las UPM, puede ser estratificado o sistemático.
 
@@ -173,6 +218,8 @@ LucyI <- rbind(Lucy1, Lucy2, Lucy3, Lucy4, Lucy5, Lucy6, Lucy7, Lucy8, Lucy9, Lu
 
 ## se forma base de elementos muestrales filtrando zonas seleccionadas (censo dentro de la zona)
 
+
+
 attach(LucyI)
 
 zona<- as.factor(as.integer(Zone)) ## para tener lista de zonas parte de la muestra
@@ -182,4 +229,9 @@ estimaI <- as.data.frame(T.SIC(estima,zona)) ## totaliza variables por cada vari
 
 E.SI(NI, nI, estimaI)
 
+
+
+#### analizar tamaño de muestra #####
+
+##### calcular tamaño muestral por 0.5############
 
