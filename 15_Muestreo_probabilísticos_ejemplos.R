@@ -101,6 +101,7 @@ library(gridExtra)
 ## se selecciona una variable categórica que influya en las de interés. 
 ### en este caso la variable selecionada es: Level que mide el tamaño de la empresa
 
+
 data(BigLucy)
 attach(BigLucy)
 N <- dim(BigLucy)[1]
@@ -125,15 +126,15 @@ Nst
 
 #### calcular alfas o proporciones de observaciones en cada estrato
 
-aB=N1/sum(N)
-aM=N2/sum(N)
-aS=N3/sum(N)
+aB=N1/N
+aM=N2/N
+aS=N3/N
 
 a=c(aB,aM,aS)
 ##### generar piloto y calcuar la varianza muestral de cada estrato
 
 
-
+set.seed(987)
 Big=BigLucy[BigLucy$Level=="Big",] ## filtrar por empresas BIG
 samBig=sample(N1,20) ### seleccionar una muestra para el piloto
 BigSam=Big[samBig,] ### seleccionarmuestra aleatoria de Big
@@ -188,20 +189,24 @@ attach(BigLucy)
 
 ## Se define una variable que facilite la toma de muestra (Geografía)
 
-M <- dim(BigLucy)[1]
-UI <- levels(BigLucy$Zone) ## se trata cada nivel de la variable definida como un individuo, se llaman UPM
+M <- dim(BigLucy)[1] ### total de empresas 
+
+U <- levels(BigLucy$Zone) ## UPM, es la lista de conglomerados
+
+N <- length(U)  ##Número de conglomerados
+
+n <- 10 ## Número de conglomerados en muestra
+
+Mi=table(BigLucy$Zone)
+
+#### extraer muestra de conglomerados ###
+
+sam <- S.SI(N, n) ## Muestreo de conglomerados con MAS, puede ser estratificado o sistemático.
+
+muestra <-U[sam] ## para saber el nombre de la zona
 
 
-NI <- length(UI)  ##El nuevo tamaño muestral
-
-
-
-######
-nI <- 10 ## tamaño  muestral de las UPM para piloto
-
-samI <- S.SI(NI, nI) ## se utiliza MAS para la selección de las UPM, puede ser estratificado o sistemático.
-
-muestra <-UI[samI] ## para saber el nombre de la zona
+#### filtrar tabla por conglomerados de la muestra
 
 Lucy1 <- BigLucy[which(Zone == muestra[1]),]
 Lucy2 <- BigLucy[which(Zone == muestra[2]),]
@@ -214,24 +219,111 @@ Lucy8 <- BigLucy[which(Zone == muestra[8]),]
 Lucy9 <- BigLucy[which(Zone == muestra[9]),]
 Lucy10 <- BigLucy[which(Zone == muestra[10]),]
 
-LucyI <- rbind(Lucy1, Lucy2, Lucy3, Lucy4, Lucy5, Lucy6, Lucy7, Lucy8, Lucy9, Lucy10)
+### juntar
+Lucy <- rbind(Lucy1, Lucy2, Lucy3, Lucy4, Lucy5, Lucy6, Lucy7, Lucy8, Lucy9, Lucy10)
 
 ## se forma base de elementos muestrales filtrando zonas seleccionadas (censo dentro de la zona)
 
 
+attach(Lucy)
 
-attach(LucyI)
 
-zona<- as.factor(as.integer(Zone)) ## para tener lista de zonas parte de la muestra
+table(Zone) ### se deben borrar los vacios
+table(droplevels(Zone)) 
+
+zona=droplevels(Zone) ## 
 estima <- data.frame(Income, Employees, Taxes)
-estimaI <- as.data.frame(T.SIC(estima,zona)) ## totaliza variables por cada variable de interés
+estimaI <- as.data.frame(T.SIC(estima,zona)) ## totaliza variables de interés por cada conglomerado
+E.SI(N, n, estimaI)
 
+###la notación de diapositivas es diferente a R:
+### Ni = mi(diapositivas)
 
-E.SI(NI, nI, estimaI)
+mi=estimaI$Ni
+yi=estimaI$Income
 
+Mbarra=M/N
 
-
-#### analizar tamaño de muestra #####
+ybarra=sum(yi)/sum(mi)
 
 ##### calcular tamaño muestral por 0.5############
+dif=yi-(ybarra*mi)
+
+sr_2=sum(dif^2)/(n-1)
+
+B=25
+D=(B^2)*(Mbarra^2)/4
+
+n=(N*sr_2)/(N*D +sr_2)
+
+
+
+
+#######################################  
+##### 5. Muestreo por etapas MAS-MAS
+#####################################
+
+
+
+data("Lucy")
+attach(Lucy)
+
+table(Lucy$Zone)
+
+U=levels(Lucy$Zone)
+N=length(U)
+n=4
+
+set.seed(987)
+samc=sample(N,n)
+
+muestrac=U[samc]
+
+Lucy1 <- Lucy[which(Lucy$Zone==muestrac[1]),]
+Lucy2 <- Lucy[which(Lucy$Zone==muestrac[2]),]
+Lucy3 <- Lucy[which(Lucy$Zone==muestrac[3]),]
+Lucy4 <- Lucy[which(Lucy$Zone==muestrac[4]),]
+
+M1 <- dim(Lucy1)[1]
+M2 <- dim(Lucy2)[1]
+M3 <- dim(Lucy3)[1]
+M4 <- dim(Lucy4)[1]
+
+prop_mas= 0.2### se asigno arbitrariamente, se debería calcular por mas en cada UPM
+
+m1=floor(M1*prop_mas)
+m2 =floor(M2*prop_mas)
+m3= floor(M3*prop_mas)
+m4= floor(M4*prop_mas)
+
+Mi=c(M1,M2,M3,M4)
+mi=c(m1,m2,m3,m4)
+
+sum(mi) ### total de unidades secundarias en muestra
+
+sam1 <- sample(M1,m1)
+sam2 <- sample(M2,m2)
+sam3 <- sample(M3,m3)
+sam4 <- sample(M4,m4)
+
+muestra1 <- Lucy1[sam1,]
+muestra2 <- Lucy2[sam2,]
+muestra3 <- Lucy3[sam3,]
+muestra4 <- Lucy4[sam4,]
+
+muestra=rbind(muestra1,muestra2,muestra3,muestra4)
+
+attach(muestra)
+estima=data.frame(Income,Employees, Taxes)
+
+Zone <- droplevels(muestra$Zone)
+
+E.2SI(N,n,Mi,mi,estima,Zone)
+
+
+########################################
+#####Ejercicio##########################
+########################################
+
+
 
