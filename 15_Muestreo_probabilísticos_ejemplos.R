@@ -195,7 +195,7 @@ U <- levels(BigLucy$Zone) ## UPM, es la lista de conglomerados
 
 N <- length(U)  ##Número de conglomerados
 
-n <- 10 ## Número de conglomerados en muestra
+n <- 10 ## Número de conglomerados en muestra para piloto
 
 Mi=table(BigLucy$Zone)
 
@@ -223,7 +223,7 @@ Lucy10 <- BigLucy[which(Zone == muestra[10]),]
 Lucy <- rbind(Lucy1, Lucy2, Lucy3, Lucy4, Lucy5, Lucy6, Lucy7, Lucy8, Lucy9, Lucy10)
 
 ## se forma base de elementos muestrales filtrando zonas seleccionadas (censo dentro de la zona)
-
+table(Lucy$Zone)
 
 attach(Lucy)
 
@@ -237,7 +237,7 @@ estimaI <- as.data.frame(T.SIC(estima,zona)) ## totaliza variables de interés p
 E.SI(N, n, estimaI)
 
 ###la notación de diapositivas es diferente a R:
-### Ni = mi(diapositivas)
+### Ni = mi(diapositivas)=Mi
 
 mi=estimaI$Ni
 yi=estimaI$Income

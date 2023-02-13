@@ -1,12 +1,18 @@
 
+
+
+library(tseries) # cargar librería para series de tiempo
+
+
+
+
 set.seed(100) ###semilla
 t=c(1:200) ##Consecutivo del tiempo
 pib=200+ 4*t + rnorm(n=200,mean=100,sd=50) ###Crear variable ficticia
 
-pib_ts=ts(pib, start=1820,frequency =1 ) ##Convertir variable a serie de tiempo
-plot(pib_ts) ### para grficar
 
-print(pib_ts) ###Para ver información de la serie
+pib_ts=ts(pib, start=1820,frequency =1 ) ##Convertir variable a serie de tiempo
+plot(pib_ts) ### para grficarprint(pib_ts) ###Para ver información de la serie
 
 n=length(pib_ts)
 
@@ -17,7 +23,11 @@ end(pib_ts)
 frequency(pib_ts)
 
 ### Ajustar modelo de regresión lineal
-m1=lm(pib_ts~t)
+t_ano=t+1820
+m1=lm(pib_ts~t_ano)
+
+plot(pib_ts)
+abline(m1)
 summary(m1)
 
 #######Ejercicio ###
@@ -30,6 +40,5 @@ mean(pib) ### para verificar valor
 
 #######
 
-##### cambios probando cambios ####
 
 
