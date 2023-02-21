@@ -54,4 +54,47 @@ pred=424.1161
 checkresiduals(rl)
 
 #######
+t=c(1:200)
+pib2=4+t +5*t^2
+
+df=data.frame(pib2)
+write.csv(df,"pib2.csv")
+
+
+
+####### ejercicio 2 PIB2
+
+url='https://raw.githubusercontent.com/juancamiloespana/MUSE_JCE/master/data/pib2.csv'
+
+pib2=read.csv(url)
+
+pib_ts2=ts(pib2$pib2, start=1500, frequency=1)
+
+plot(pib_ts2) ## la gráfica muestra una relacion cuadratica entre la serie y el tiempo
+### se necesita un componente de tiempo al cuadrado
+
+ini=start(pib_ts2)[1] ## ano de inicio de la serie
+fin=end(pib_ts2)[1] ### ano fin de la serie
+
+t=c(ini:fin) ### tiempo utilizando ano y fin 
+t2= t**2 ### componente cuadratico de la serie
+
+
+rl=lm(pib_ts2~t+t2) ### ajsutar el modelo usando t y t2 (t elevado al cuadrado)
+abline(rl) ### el modelo no grafica sobre la serie porque esta en tres dimensiones
+
+summary(rl)
+
+
+t_pred=c(1560,1830)  ## crear vector de tiempos a predecir
+t2_pred=t_pred**2  ## vector de tiempos a predecir elevado al cuadrado
+
+data_pred=data.frame(t=t_pred,t2=t2_pred)  ## t y t2 llevarlos a data frame, para ser usados en funcion predic
+
+predict(rl, newdata=data_pred)  ### predecir anos registrados
+
+plot(rl)
+
+checkresiduals(rl) 
+### los graficos se ven muy extraños porque la serie tiene muy poco variabilidad y eso dana la escala del modelo, sin embargo el supuesto de independencia se cumple, el de varianza constante salvo el primer valor, parece cumplirse y normalidad pareceria que no 
 
