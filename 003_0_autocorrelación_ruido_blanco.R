@@ -16,8 +16,9 @@ acf(lynx)
 pacf(lynx)
 
 
-acf(lynx, plot=F)
+v=acf(lynx)
 pacf(lynx,plot=F)
-
+summary(v)
+acf
 
 

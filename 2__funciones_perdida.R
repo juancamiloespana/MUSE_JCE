@@ -1,6 +1,6 @@
 ### cargar paquetes
 
-library(Metrics) ###
+library(Metrics)
 library(forecast)
 
 ### Simular datos pib ###
