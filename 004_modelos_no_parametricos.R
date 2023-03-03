@@ -1,19 +1,31 @@
+install.packages('sma')
 library(smooth)
 library(forecast)
-### Leer datos ####
+install.packages('smooth')
 
-df=read.csv("serie_ejemplos_excel.csv",sep=";",dec=",")
-names(df)="valor" ## corregir nombre variable
-
-##### medias móviles
-
-y=ts(df$valor, start=1950, frequency = 1)
-
-ma_y=sma(y,h=5,silent = F,interval=T, level=0.80) ## se ajusta un modelo de medias móviles
-ma_y2=sma(y,h=5,silent = F,interval=T, level=0.90,order=6) ## se ajusta un modelo de medias móviles
+library(smooth)
+library(forecast)
 
 
-summary(ma_y) 
-summary(ma_y2)
-ma_y$forecast
+#######
+
+#Evaluar graficamente las series 
+
+  ##Lynx, 
+  ###demanda (inicia en febrero de 1820)  es mensual
+  #valor_acciones_Ecopetrol (inicia 1959) es anual 
+
+## Analizar con acf y decir cuál es la más apropiada para sma.
+
+#Ajustar modelo de sma para serie valor accion ecopetrol y probar cambiando los siguientes argumentos:
+## Order
+## Holdout
+## silent
+
+### Comparar los modelos para las tres series 
+###Basado en la serie de valores de ecopetrol:
+
+    ###decir cual es el pronostico para 1995
+    ### decir cuales es el IC del 97% en el pronostico de 1995
+
 
