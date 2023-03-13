@@ -1,31 +1,26 @@
-install.packages('sma')
-library(smooth)
+#install.packages('smooth')
+#install.packages('fpp')
+
+library(smooth) ## paquete con funcion sma_old
 library(forecast)
-install.packages('smooth')
+library(fpp)### paquete con series de tiempo
 
-library(smooth)
-library(forecast)
+##########################################################
+################  Ejericio  ##############################
+##########################################################
 
+#Para el siguiente ejercicio Utilizara las siguientes series:
 
-#######
+  #valor accion ecopetrol (inicia 1959 marzo) es mensual 
+  #demanda (inicia el 45 dia de 1820)  es diaria frecuencia anual
+  #Serie a10 del paquete fpp venta mensual
 
-#Evaluar graficamente las series 
-
-  ##Lynx, 
-  ###demanda (inicia en febrero de 1820)  es mensual
-  #valor_acciones_Ecopetrol (inicia 1959) es anual 
-
-## Analizar con acf y decir cuál es la más apropiada para sma.
-
-#Ajustar modelo de sma para serie valor accion ecopetrol y probar cambiando los siguientes argumentos:
-## Order
-## Holdout
-## silent
-
-### Comparar los modelos para las tres series 
-###Basado en la serie de valores de ecopetrol:
-
-    ###decir cual es el pronostico para 1995
-    ### decir cuales es el IC del 97% en el pronostico de 1995
+#1 Garantizar que las series  estan en formato ts y con frecuencia diferente de 1
+#2. Evaluar graficamente las siguientes series y decir que componentes parecen tener
+  ### 1.1 Serie vs el tiempo
+  ### 1.2 ACF y PACF
+  ### 1.3 descomponer la serie
+#3. de acuerdo al analisis anterior a cual serie le funcionaria mejor un pronostico por medias moviles
+#4. ajustar modelo de medias moviles para las tres series y analizar
 
 
