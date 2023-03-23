@@ -73,7 +73,6 @@ Acf(ts_vae)
 Pacf(ts_vae)
 ### parece ser estacionaria, el intervalo de confianza de la grafica es más grande cuando hay menos datos, como en esta serie
 
-
 par(mfrow=c(1,2))
 Acf(ts_dem)
 Pacf(ts_dem)
