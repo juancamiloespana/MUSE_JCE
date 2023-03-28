@@ -43,19 +43,26 @@ autoplot(a10) ### esta serie de tiempo esta en el paquete fpp, ya esta en format
 mod_sma=sma_old(ts_vae, silent=F) ###modelo de medias móviles
 mod_ses=ses(ts_vae) ##modelo con alpha optimizado
 mod_ses2=ses(ts_vae, alpha=0.8, h=2) ##modelo con alpha manual
-
+mod_holt=holt(ts_vae)
+mod_hw=hw(ts_vae)
 
 ### graficar ####
 
 plot(mod_sma, which=7) ## la funcion autoplot no funciona con objeto de smooth
 autoplot(mod_ses) ### los modelos del paquete forecast no imprimen grafica como smal_old
 autoplot(mod_ses2)
+autoplot(mod_holt)
+autoplot(mod_hw)
 
 #### analizar resultados
 summary(mod_sma) ## ###AIC 176.94 ###
-sqrt(mod_sma$lossValue) ### para calcular rmse de medias móviles 
+sqrt(mod_sma$lossValue) ### para calcular rmse de medias móviles 4.77 
 summary(mod_ses) ###AIC 193.26, RMSE 4.69
-summary(mod_ses2,alpha=0.8)### AIC 206 ### RMSE 6.13
+summary(mod_ses2)### AIC 206 ### RMSE 6.13
+summary(mod_holt)###AIC 197.77 ###RMSE 4.73
+summary(mod_hw)  ##### AIC 234 y 5.88
+
+
 
 
 
