@@ -117,5 +117,13 @@ pedido=function(cap_suc,saldo_suc, y){ ### ingresa saldo suc, capacidad y serie 
 }
 
 
-ped=pedido(cap=cap, saldo ,ts_suc2)
+ped=pedido(cap=cap, saldo=cap ,ts_suc2)
 ped
+
+
+ped=pedido(cap=cap, saldo=-cap ,ts_suc2)
+ped
+
+t=c('t')
+library()
+mae
