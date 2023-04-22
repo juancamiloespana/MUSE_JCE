@@ -47,3 +47,14 @@ summary(modelo2) ## da mejor el anterior
 modelo3=auto.arima(ts_suc2, seasonal = F)
 summary(modelo3)
 
+library(forecast)
+arima_ej1=arima.sim( list(order=c(2,1,0),ar=c(.3,0.2)),n=200)
+
+
+
+arima_ej2=arima.sim( list(order=c(0,1,1),ma=.7),n=200)
+autoplot(arima_ej2)
+
+
+write.csv(arima_ej1, 'data\\arima_ej1.csv')
+write.csv(arima_ej1, 'data\\arima_ej2.csv')
