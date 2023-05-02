@@ -1,6 +1,8 @@
 library(forecast) ### modelos forecast
 library(urca) ### estacionariedad
 
+
+
 cod_suc = 21
 ruta_sucs='https://raw.githubusercontent.com/juancamiloespana/MUSE_JCE/master/caso_estudio/flujo_efectivo.csv'
 df_sucs=read.csv(ruta_sucs) ### serie de tiempo de todas las sucursales
@@ -57,4 +59,24 @@ autoplot(arima_ej2)
 
 
 write.csv(arima_ej1, 'data\\arima_ej1.csv')
-write.csv(arima_ej1, 'data\\arima_ej2.csv')
+write.csv(arima_ej2, 'data\\arima_ej2.csv')
+
+plot(arima_ej2)
+
+library(forecast)
+
+set.seed(5)
+arima_ej1=arima.sim( list(order=c(0,0,2),ma=c(-.4,-0.2)),n=200)
+
+par(mfrow=c(1,2))
+acf(arima_ej1,lag.max = 40)
+pacf(arima_ej1,lag.max = 40)
+
+arima_ej1=arima.sim( list(order=c(0,1,0)),n=100)
+Acf(arima_ej1)
+Pacf(arima_ej1)
+
+
+autoplot(arima_ej1)
+
+
