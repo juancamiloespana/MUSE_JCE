@@ -25,6 +25,8 @@ sel_suc=function(df_sucs,cap_sucs, saldos, cod_suc)
  return(salida) 
 }
 
+
+
 freq_ts=function(serie)
 {
   
@@ -40,9 +42,6 @@ freq_ts=function(serie)
   return(ts_flujo)
   
 }
-
-
-
 
 escoger_modelo=function(serie)
 {
@@ -92,7 +91,6 @@ escoger_modelo=function(serie)
   return(salida)
 }
 
-
 reajustar_mod=function(serie, datos_mod)
 {
   
@@ -108,8 +106,8 @@ reajustar_mod=function(serie, datos_mod)
   
 }
 
-
-pedido=function(datos_mod, datos_suc, saldo_dia_ant,flujo_hast_dia_ant, h=2){ ### ingresa saldo suc, capacidad y serie de tiempo
+pedido=function(datos_mod, datos_suc, saldo_dia_ant,flujo_hast_dia_ant, h=2)
+{ ### ingresa saldo suc, capacidad y serie de tiempo
   
 
   cap_suc=datos_suc$cap_suc
@@ -131,9 +129,6 @@ pedido=function(datos_mod, datos_suc, saldo_dia_ant,flujo_hast_dia_ant, h=2){ ##
   punto_restabl=cap_suc/2 ##3 punto de restablecimiento de inventario
   
   
-
-  
-  
   if( pron_saldo>=cap_suc){
     recol=pron_saldo-punto_restabl
     aprov=0
@@ -150,64 +145,60 @@ pedido=function(datos_mod, datos_suc, saldo_dia_ant,flujo_hast_dia_ant, h=2){ ##
   return(pedido)
 }
 
-
-
-
-
 simu_datos=function(datos_mod, datos_suc, ini_sim=517, h=2)
 {
 
-
-cap=datos_suc$cap ## la capacidad no cambia
-s_flujo=datos_suc$flujo_suc/1000000
-
-saldo_dia=numeric() ###  iniciarlizar un vector para acumular los saldos de simulación 
-aprov_dia=numeric() ###  iniciarlizar un vector para acumular los aprovisionamientos
-recol_dia=numeric() ###  iniciarlizar un vector para acumular las recolecciones
-
-saldo_dia[ini_sim] =datos_suc$saldo_2022_06_01 ### saldo 1 de junio ida ant
-
-
-for (j in (ini_sim+1):(ini_sim+h-1))
-{
-  saldo_dia[j] =max(saldo_dia[j-1] + s_flujo[j],0) ### saldo dia actual el pedido no llega el mismo dia entonces no depende de aprovisionamiento
-  aprov_dia[j]=0
-  recol_dia[j]=0
+  cap=datos_suc$cap ## la capacidad no cambia
+  s_flujo=datos_suc$flujo_suc/1000000
   
-}
+  saldo_dia=numeric() ###  iniciarlizar un vector para acumular los saldos de simulación 
+  aprov_dia=numeric() ###  iniciarlizar un vector para acumular los aprovisionamientos
+  recol_dia=numeric() ###  iniciarlizar un vector para acumular las recolecciones
+  
+  saldo_dia[ini_sim] =datos_suc$saldo_2022_06_01 ### saldo 1 de junio ida ant
+  
+  
+  for (j in (ini_sim+1):(ini_sim+h-1))
+  {
+    saldo_dia[j] =max(saldo_dia[j-1] + s_flujo[j],0) ### saldo dia actual el pedido no llega el mismo dia entonces no depende de aprovisionamiento
+    aprov_dia[j]=0
+    recol_dia[j]=0
+    
+  }
 # el contador de flujo es diferente porque tiene la serie en el pasado para el modelo
 
 
-n_flujo=length(s_flujo)
+  n_flujo=length(s_flujo)
 
 
 ### inicia en 2 porque el saldo del dia 1 está definido es el del 
-for (dia_act in (ini_sim+1):(n_flujo) ){
+  for (dia_act in (ini_sim+1):(n_flujo) )
+  {
 
-  dia_ant=dia_act-1
-  dia_h=dia_ant+h
+    dia_ant=dia_act-1
+    dia_h=dia_ant+h
+    
+    s_flujo_dia_ant =s_flujo[1:dia_ant] ##serie flujo hasta dia anterior al que estoy iniciando 1 de junio
+    ts_flujo_dia_ant=freq_ts(s_flujo_dia_ant)  ### convertir serie  anterior en ts
   
-  s_flujo_dia_ant =s_flujo[1:dia_ant] ##serie flujo hasta dia anterior al que estoy iniciando 1 de junio
-  ts_flujo_dia_ant=freq_ts(s_flujo_dia_ant)  ### convertir serie  anterior en ts
-
-  saldo_dia_ant_aj=saldo_dia[dia_ant] + aprov_dia[dia_act]-recol_dia[dia_act] ### yo sé las ordenes que tengo para el dia act entonces debo descontarlas
- 
-  ped=pedido(datos_mod, datos_suc,  saldo_dia_ant_aj,ts_flujo_dia_ant,h=h)
-  
-  aprov_dia[dia_h]=ped$a
-  recol_dia[dia_h]=ped$r
-
+    saldo_dia_ant_aj=saldo_dia[dia_ant] + aprov_dia[dia_act]-recol_dia[dia_act] ### yo sé las ordenes que tengo para el dia act entonces debo descontarlas
    
-    ### actualizar saldo dias siguientes #####
-  flujo_dia_h=s_flujo[dia_h]
-  saldo_dia[dia_h] = max(saldo_dia[dia_act] + flujo_dia_h + aprov_dia[dia_h] - recol_dia[dia_h],0)
+    ped=pedido(datos_mod, datos_suc,  saldo_dia_ant_aj,ts_flujo_dia_ant,h=h)
+    
+    aprov_dia[dia_h]=ped$a
+    recol_dia[dia_h]=ped$r
+  
+     
+      ### actualizar saldo dias siguientes #####
+    flujo_dia_h=s_flujo[dia_h]
+    saldo_dia[dia_h] = max(saldo_dia[dia_act] + flujo_dia_h + aprov_dia[dia_h] - recol_dia[dia_h],0)
 
 
   }
 
 
-salida=list('saldo'=saldo_dia,'aprov'= aprov_dia,'recol'= recol_dia)
-return(salida)
+  salida=list('saldo'=saldo_dia,'aprov'= aprov_dia,'recol'= recol_dia)
+  return(salida)
 
 }
 

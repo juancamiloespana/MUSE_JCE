@@ -2,7 +2,7 @@
 library(dplyr)
 ## Este código carga las funciones del script que se llame
 source("D:\\cod\\R_muse\\caso_estudio\\funciones.R") #se usan dos backslash
-suc=1
+
 main=function(num_suc, ini_sim=517, h=2)
   {
   
@@ -25,6 +25,7 @@ main=function(num_suc, ini_sim=517, h=2)
 
     for( suc in list_suc[1:num_suc])  ## hacer el proceso para cada sucursal
     {
+
     
       datos_suc=sel_suc(df_sucs,cap_sucs,saldos, cod_suc=suc) ## todos los datos de la suc indicada, en una lista: cap, flujo, saldo_1_jun
       
@@ -32,18 +33,19 @@ main=function(num_suc, ini_sim=517, h=2)
       
       datos_mod=escoger_modelo(ts_flujo) ### escoge el mejor modelo para la sucursal
       
+  
       res_sim= simu_datos(datos_suc =datos_suc, ### realiza la simulación apartir de la periodo definido
                                 datos_mod = datos_mod,
                                 ini_sim=ini_sim,
                                 h=h)
       
-    
+   
       
       ## dentro se llama pedido, para cada dia
       #####dentro de pedido se llama reajustar modelo
       res_sim$cod=suc
       res_sim$sup_cap=as.integer(res_sim$saldo>datos_suc$cap_suc)  
-      res_sim$sin_efe=as.integer(res_sim$saldo<0)  
+      res_sim$sin_efe=as.integer(res_sim$saldo<=0)  
       res_sim$n_ped=as.integer(res_sim$aprov+res_sim$recol >0)
       
       df_res_sim= na.omit(data.frame(res_sim))
@@ -58,6 +60,8 @@ main=function(num_suc, ini_sim=517, h=2)
   }
 
 
+
+datos_p=main(num_suc=3)
 
 datos=main(num_suc=20)
 
@@ -78,3 +82,12 @@ total=datos%>%
 sum(total)
 
 
+suc=6
+cap=cap_sucs[suc,][[2]]/1000000
+
+datos1=datos[datos$cod==suc,]
+plot(datos1$saldo, ylim=c(0,cap))
+abline(h=cap, col='red', lwd=2)
+
+flujo=df_sucs[df_sucs$suc==suc,]
+plot(flujo$flujo_efe/1000000, type='l')
