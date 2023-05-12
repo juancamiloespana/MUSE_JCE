@@ -21,12 +21,13 @@ main=function(num_suc, ini_sim=517, h=2)
     list_suc= unique(df_sucs$suc) ## lista de las sucursales con serie de flujo
     num_suc=min(num_suc, length(list_suc)) ## para cuantas suc se va a realizar el proceso
     
+  
     df_acum=data.frame() ## para guardar todos los resultados de simulaciones
 
     for( suc in list_suc[1:num_suc])  ## hacer el proceso para cada sucursal
     {
 
-    
+   
       datos_suc=sel_suc(df_sucs,cap_sucs,saldos, cod_suc=suc) ## todos los datos de la suc indicada, en una lista: cap, flujo, saldo_1_jun
       
       ts_flujo=freq_ts(datos_suc$flujo_suc) ### encuentra la frecuencia y convierte a ts
@@ -61,9 +62,11 @@ main=function(num_suc, ini_sim=517, h=2)
 
 
 
-datos_p=main(num_suc=3)
+datos_p=main(num_suc=3, h=2)
+datos=datos_p
 
-datos=main(num_suc=20)
+
+
 
 c_ped=100
 c_sup=200  
@@ -82,7 +85,7 @@ total=datos%>%
 sum(total)
 
 
-suc=6
+suc=2
 cap=cap_sucs[suc,][[2]]/1000000
 
 datos1=datos[datos$cod==suc,]

@@ -10,7 +10,7 @@ sel_suc=function(df_sucs,cap_sucs, saldos, cod_suc)
 {
   
   df_suc=df_sucs[df_sucs$suc ==cod_suc,] ###serie de tiempo de sucursal 17 (escogida al azar)
-  flujo_suc=df_suc$flujo_efe
+  flujo_suc=df_suc$flujo_efe/1000000
   fechas=df_suc$fechas
   
   cap_suc=cap_sucs[cap_sucs$suc==cod_suc,] ### filtrar para suc seleccionada
@@ -93,7 +93,7 @@ escoger_modelo=function(serie)
 
 reajustar_mod=function(serie, datos_mod)
 {
-  
+
   mod=datos_mod$mod
   n_mod=datos_mod$n_mod
   list_mods=list('sma'=sma_old, 'ses'= ses,
@@ -113,9 +113,12 @@ pedido=function(datos_mod, datos_suc, saldo_dia_ant,flujo_hast_dia_ant, h=2)
   cap_suc=datos_suc$cap_suc
   saldo_suc=saldo_dia_ant
   flujo=flujo_hast_dia_ant
+
   
   modelo=reajustar_mod( flujo, datos_mod)
+
   
+
   
   if(class(modelo)[1]=='smooth')##validar si es medias moviles para extraer diferente el pronostico
   { 
@@ -123,11 +126,13 @@ pedido=function(datos_mod, datos_suc, saldo_dia_ant,flujo_hast_dia_ant, h=2)
   }else{
     pron_a=forecast(modelo)# pronosticos modelo e intervalos
     pron=sum(pron_a$mean[1:h]) ## solo pronostivo son interv h periodos
+   
   }
 
   pron_saldo=saldo_suc+pron ## calcular saldo pronosticado 2022-06-02
   punto_restabl=cap_suc/2 ##3 punto de restablecimiento de inventario
   
+
   
   if( pron_saldo>=cap_suc){
     recol=pron_saldo-punto_restabl
@@ -149,7 +154,7 @@ simu_datos=function(datos_mod, datos_suc, ini_sim=517, h=2)
 {
 
   cap=datos_suc$cap ## la capacidad no cambia
-  s_flujo=datos_suc$flujo_suc/1000000
+  s_flujo=datos_suc$flujo_suc
   
   saldo_dia=numeric() ###  iniciarlizar un vector para acumular los saldos de simulación 
   aprov_dia=numeric() ###  iniciarlizar un vector para acumular los aprovisionamientos
@@ -182,7 +187,7 @@ simu_datos=function(datos_mod, datos_suc, ini_sim=517, h=2)
     ts_flujo_dia_ant=freq_ts(s_flujo_dia_ant)  ### convertir serie  anterior en ts
   
     saldo_dia_ant_aj=saldo_dia[dia_ant] + aprov_dia[dia_act]-recol_dia[dia_act] ### yo sé las ordenes que tengo para el dia act entonces debo descontarlas
-   
+ 
     ped=pedido(datos_mod, datos_suc,  saldo_dia_ant_aj,ts_flujo_dia_ant,h=h)
     
     aprov_dia[dia_h]=ped$a

@@ -10,7 +10,7 @@ library(urca)
 #### Realice un pronostico para agosto de 1997
 
 #### cuál sería su pronóstico si tuviera que asegurar que sólo se arriesga un
-#### 3% a tener un valor real superior a lo pronósticado
+#### 3% a tener un valor real superior a lo pronosticado
 
 ##### cargar datos
 
@@ -66,7 +66,31 @@ par(mfrow=c(1,2))
 Acf(ts_e_t_D_d, lag.max = 50)
 Pacf(ts_e_t_D_d, lag.max = 50)
 
-### en la grafica se identifican q=1, Q=2; p=0,1 ; P=0
+### en la grafica se identifican q=1, Q=2; p=0,1,3 ; P=0
+
+mod0=Arima(ts_e, order=c(0,1,1),seasonal = c(0,1,2), lambda=l) # ajustar modelo con componentes identificados
+mod1= Arima(ts_e, order=c(1,1,1),seasonal = c(0,1,2), lambda=l) # ajustar modelo con componentes identificados
+mod3= Arima(ts_e, order=c(3,1,1),seasonal = c(0,1,2), lambda=l) # ajustar modelo con componentes identificados
+
+
+summary(mod0) ### AIC: -108.33, RMSE: 162.06, 58,17
+summary(mod1) ### AIC: -106.61, RMSE: 162.031, 58,31
+summary(mod3) ### AIC -105.64, RMSE: 161.8, 59.94 
+
+mean(ts_e)
+
+
+mod4=auto.arima(ts_e, lambda=l,trace=T )
+summary(mod4) ## AIC: -109.71, 161.67, 57.88
+
+end(ts_e)
+
+pronosticos=forecast(mod4, h= 25, level=0.94)
+
+plot(pronosticos)
+lines(mod4$fitted, col='red')
+
+
 
 #### Ejercicio 2 ajustar un modelo para la serie1.csv de data en github
 #### la serie es mensual, termina en 2023 marzo
