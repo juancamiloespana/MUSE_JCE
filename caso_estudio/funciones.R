@@ -1,13 +1,13 @@
 
 ### cargar librerias
-
 library(smooth) ## paquete con funcion sma_old
 library(forecast) ### modelos holt, hw y ses
 library(Metrics)
 
-
 sel_suc=function(df_sucs,cap_sucs, saldos, cod_suc)
 {
+
+  
   
   df_suc=df_sucs[df_sucs$suc ==cod_suc,] ###serie de tiempo de sucursal 17 (escogida al azar)
   flujo_suc=df_suc$flujo_efe/1000000
@@ -24,8 +24,6 @@ sel_suc=function(df_sucs,cap_sucs, saldos, cod_suc)
               'fechas'=fechas)  
  return(salida) 
 }
-
-
 
 freq_ts=function(serie)
 {
@@ -152,7 +150,6 @@ pedido=function(datos_mod, datos_suc, saldo_dia_ant,flujo_hast_dia_ant, h=2)
 
 simu_datos=function(datos_mod, datos_suc, ini_sim=517, h=2)
 {
-
   cap=datos_suc$cap ## la capacidad no cambia
   s_flujo=datos_suc$flujo_suc
   
