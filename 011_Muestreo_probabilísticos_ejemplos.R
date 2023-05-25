@@ -19,13 +19,23 @@ N <- dim(BigLucy)[1]  ##Tamaño población
 set.seed(123) ## para que los calculos sean iguales
 
 
+
 ### 1. Tamaño muestra  ## ###
 
+### para media ####
 n_sd=2  ## Número de desviaciones para una probabilidad de 95%
 s=300  ## se conoce teórica o por un piloto
 B=25 ## ##Margen de error máximo aceptable (está en millones) lo define el investigador
 D=(B/n_sd)^2
 n=(N*s^2)/(((N-1)*D)+s^2)  ## Muestra con población 
+
+
+#### para total poblacional
+
+B_t=2000000 ## diferencia mínima tolerable para total poblacional
+D_P=(B_t/(n_sd*N))^2
+n_TP= (N*s^2)/(((N-1)*D_P)+s^2)
+
 
 
 ###  1. Extracción de muestra con tamaño definido  ####
@@ -40,6 +50,8 @@ attach(muestra)
 estima <- muestra[,c("Income", "Employees", "Taxes")] # base con las columnas para hacer estimación
 A=E.SI(N,n,estima)## función para hacer estimaciones MAS sin reemplazo del total con con HT
 
+###el argumento DEFF es  Design effect es la relación entre la varianza obtenido por el muestreo actual y el que se obtendría con MAS
+
 
 
 ###########################################
@@ -52,7 +64,7 @@ attach(BigLucy)
 
 set.seed(123)
 N <- dim(BigLucy)[1]
-n=386 ## según MAS
+n=572 ## según MAS el  mismo del anterior
 a <- floor(N/n) ## definir número de grupos en los que se divide la población
 
 
@@ -109,7 +121,7 @@ varst=c(varB,varM,varS)
 #### calcular tamaño muestral
 
 B=25
-D= 25^2/4 ## para la media
+D= (25^2)/4 ## para la media
 
 num=  sum(Nst^2*varst*(1/a))
 den = (N^2)*D + sum(Nst*varst)
@@ -186,6 +198,7 @@ table(droplevels(Zone))
 
 zona=droplevels(Zone) ## 
 estima <- data.frame(Income, Employees, Taxes)
+
 estimaI <- as.data.frame(T.SIC(estima,zona)) ## totaliza variables de interés por cada conglomerado
 E.SI(N, n, estimaI)
 
@@ -197,12 +210,12 @@ yi=estimaI$Income
 Mbarra=M/N
 ybarra=sum(yi)/sum(mi)
 
-##### calcular tamaño muestral por 0.5############
+##### calcular tamaño muestral ############
+
 dif=yi-(ybarra*mi)
 sr_2=sum(dif^2)/(n-1)
 B=25
 D=(B^2)*(Mbarra^2)/4
-
 n=(N*sr_2)/(N*D +sr_2)
 
 
