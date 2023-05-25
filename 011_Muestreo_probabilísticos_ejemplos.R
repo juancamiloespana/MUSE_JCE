@@ -50,7 +50,7 @@ attach(muestra)
 estima <- muestra[,c("Income", "Employees", "Taxes")] # base con las columnas para hacer estimación
 A=E.SI(N,n,estima)## función para hacer estimaciones MAS sin reemplazo del total con con HT
 
-###el argumento DEFF es  Design effect es la relación entre la varianza obtenido por el muestreo actual y el que se obtendría con MAS
+###el argumento DEFF es  Design effect es la relación entre la varianza obtenido por el muestreo actual y el que se obtendría con
 
 
 
@@ -121,7 +121,7 @@ varst=c(varB,varM,varS)
 #### calcular tamaño muestral
 
 B=25
-D= (25^2)/4 ## para la media
+D= (25^2)/4 ## para la media, intervalo del 95%
 
 num=  sum(Nst^2*varst*(1/a))
 den = (N^2)*D + sum(Nst*varst)
@@ -138,6 +138,7 @@ nst <- c(n1,n2,n3)
 sam <- S.STSI(Level, Nst, nst)
 muestra <- BigLucy[sam,]
 attach(muestra)
+table(muestra$Level) ## para verificar las muestra que calcule
 
 
 estima <- data.frame(Income, Employees, Taxes)
