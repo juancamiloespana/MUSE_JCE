@@ -26,3 +26,34 @@ plot(pib_ts) ### grafica la serie
 #grafica el modelo o los pronosticos
 lines(t,rl$fitted.values, col="red", lwd=2)
 
+
+# Escribir modelo con base en la salida
+#Hacer predicciones de 2024
+#Comparar predicciones 1850 con valor real
+#Validar supuestos
+
+
+### crear data frame con valores de variable explicativa que quiero pronosticar
+t_pron=data.frame(t=c(1850, 2021, 2022,2024))
+
+##la funcion predict se le da el modelo ajustado y los datos para los que se quiere predecir
+pred=predict(rl, newdata=t_pron)
+pred[1]
+### valores ajustados solo para tiempos con los que se entrenó el modelo
+rl$fitted.values[31] ## valor ajustado
+pib_ts[31] ### valor real
+
+
+### diferencia(residual) entre valor ajustado y valor real
+res=rl$fitted.values[31]-pib_ts[31] 
+
+
+
+library(forecast)
+
+## validar supuesto: erorres normales con media cero, varianza constante e independencia
+checkresiduals(rl)
+
+###En este parece estar bien el modelo
+
+
