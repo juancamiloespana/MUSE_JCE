@@ -56,4 +56,39 @@ checkresiduals(rl)
 
 ###En este parece estar bien el modelo
 
+url2='https://raw.githubusercontent.com/juancamiloespana/MUSE_JCE/master/data/pib2.csv'
+
+pib2=read.csv(url2) 
+
+pib2_ts=ts(pib2$pib2, start=1500, frequency = 1)
+
+plot(pib2_ts)
+
+t= as.numeric(time(pib2_ts))
+t2= t^2
+
+mod1=lm(pib2_ts~t+t2)
+
+plot(pib2_ts)
+lines(t,mod1$fitted.values, col="red" )
+
+checkresiduals(mod1)
+
+
+########## grafica lynx (serie de R) ####
+plot(lynx)
+
+print(lynx) ### no hay que convertirla porque ya es una serie de tiempo
+
+### crear variable tiempo
+tl=as.numeric(time(lynx))
+
+mod2=lm(lynx~tl)
+
+plot(lynx)
+lines(tl, mod2$fitted.values, col= "red")
+
+
+summary(mod2)
+checkresiduals(mod2)
 
