@@ -3,8 +3,8 @@ install.packages("Metrics")
 install.packages("forecast")
 
 #Cargar paquetes
-library(Metrics)
-library(forecast)
+library(Metrics) ### indicadores, mape, rmse
+library(forecast) ### para validar supuestos
 
 url="https://raw.githubusercontent.com/juancamiloespana/MUSE_JCE/master/data/demanda.csv"
 
@@ -77,3 +77,10 @@ mape(ts_test, pred_m1)*100 ### mape de evaluación modelo 1
 
 pred_m2=predict(mod2,newdata=df_test )
 mape(ts_test, pred_m2)*100
+
+checkresiduals(mod2)
+checkresiduals(mod1)
+
+
+
+
