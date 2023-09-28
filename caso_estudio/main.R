@@ -94,3 +94,14 @@ abline(h=cap, col='red', lwd=2)
 
 flujo=df_sucs[df_sucs$suc==suc,]
 plot(flujo$flujo_efe/1000000, type='l')
+
+
+df_sucs$fechas2=as.Date(df_sucs$fechas)
+
+suc_cod=50
+suc=subset(df_sucs,df_sucs$suc == suc_cod)
+library(forecast)
+plot( suc$flujo_efe/1000000, type="l")
+
+min(suc$flujo_efe)
+##candidatos 2, 50
