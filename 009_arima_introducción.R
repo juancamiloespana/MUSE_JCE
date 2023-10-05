@@ -66,6 +66,39 @@ autoplot(serie_dif)
 
 ####### analizar series pib.csv y diff.csv ######
 
+library(forecast)
+library(urca)
+library(dplyr) ### para notación pipe(de proceso)
+
+url_dif="https://raw.githubusercontent.com/juancamiloespana/MUSE_JCE/master/data/dif.csv"
+
+urld_pib= "https://raw.githubusercontent.com/juancamiloespana/MUSE_JCE/master/data/pib.csv"
+
+df_dif=read.csv(url_dif)
+ts_dif=ts(df_dif$x, start=1, frequency=1) ### no se dan fechas entonces se pone iniciando en 1 y con frecuencia de 1
+
+
+autoplot(ts_dif)
+
+BoxCox.lambda(ts_dif) ### para transformación para establizar la varianza, solo usar cuando se idnetifica en la grafica que la varianza no es constante
+
+d=ndiffs(ts_dif) ### necesita dos diferenciaciones
+
+ts_dif2=diff(ts_dif, differences = d) ### esta funcion aplica d diferenciaciones
+
+autoplot(ts_dif2)
+ts_dif2%>%autoplot() ## misma que anterior pero notación pipe
+
+
+ts_dif2%>%ur.kpss()%>%summary() ### 0.0201 indica un valor p mayor a 10% según valores críticos, esto implica que se acepta la nula que dice que son estacionarios, como la serie se pudo volver estacionaria con diferenciaciones se puede afirmar que proviene de un proceso estócastico integrado.
+
+
+
+
+
+
+
+
 
 
 
