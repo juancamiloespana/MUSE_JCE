@@ -29,7 +29,11 @@ autoplot(elec_tran)
 mod_arima_auto=auto.arima(goog200, lambda=NULL, seasonal=F)
 summary(mod_arima_auto)
 plot(goog200)
+plot(forecast(mod_arima_auto, h=15, level=c(0.80,0.70)))
+
+goog200
 lines(mod_arima_auto$fitted, col="red")
+
 
 mod_arima_auto2=auto.arima(goog200, lambda=NULL, seasonal=F,trace=T, approximation = F) ### es la misma que el anterior pero muestra modelos probados y no se salta modelos
 
