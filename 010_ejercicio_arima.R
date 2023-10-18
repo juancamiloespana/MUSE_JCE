@@ -73,3 +73,18 @@ marathon_l10=marathon[111:120]
 
 write.csv(marathon_l10, "D:\\marathon_reales.csv")
 
+
+
+library(urca)
+library(forecast)
+
+lynx%>%ur.kpss()%>%summary()
+
+mod=Arima(lynx, order=c(1,0,1))
+summary(mod)
+
+
+autoplot(forecast(mod, h=10, level=0.85))
+
+
+1547.2415*(1- 0.5424 -0.6108  )
