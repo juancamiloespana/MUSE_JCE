@@ -76,13 +76,15 @@ library(dplyr) ### para notación pipe(de proceso)
 
 url_dif="https://raw.githubusercontent.com/juancamiloespana/MUSE_JCE/master/data/dif.csv"
 
-urld_pib= "https://raw.githubusercontent.com/juancamiloespana/MUSE_JCE/master/data/pib.csv"
+url_dif= "https://raw.githubusercontent.com/juancamiloespana/MUSE_JCE/master/data/arima_ej2.csv"
 
 df_dif=read.csv(url_dif)
 ts_dif=ts(df_dif$x, start=1, frequency=1) ### no se dan fechas entonces se pone iniciando en 1 y con frecuencia de 1
 
-
+library(forecast)
 autoplot(ts_dif)
+
+mod=auto.arima()
 
 BoxCox.lambda(ts_dif) ### para transformación para establizar la varianza, solo usar cuando se idnetifica en la grafica que la varianza no es constante
 
