@@ -10,6 +10,10 @@
 
 ### 3. graficar la serie y analizarla
 
+### 3.1 ver varias gráficas diferentes
+
+
+
 
 
 #### 4. crear modelo de RL y analizarlo
