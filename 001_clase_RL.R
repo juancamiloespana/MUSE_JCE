@@ -1,14 +1,28 @@
+
+#### instalar paquetes
+#install.packages("forecast")
+#install.packages("fpp")
 ##### cargar paquetes ##########
 
-
+library(forecast)
+library(fpp)
 
 #### 1. Leer tabla desde github ###
+url='https://raw.githubusercontent.com/juancamiloespana/MUSE_JCE/master/data/pib.csv'
+
+url2="D://pib.csv"
+
+data=read.csv(url2)
+
 
 
 #### 2. Convertir a formato ts ####
 
-
+pib_ts=ts(data$pib2, start=c(1820,1), frequency = 1 )
+pib_ts
 ### 3. graficar la serie y analizarla
+
+autoplot(pib_ts)
 
 ### 3.1 ver varias gráficas diferentes
 
