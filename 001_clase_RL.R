@@ -24,6 +24,7 @@ pib_ts
 
 autoplot(pib_ts)
 
+
 ### 3.1 ver varias gráficas diferentes
 
 
