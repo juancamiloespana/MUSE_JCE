@@ -77,3 +77,46 @@ checkresiduals(mod_rl)
 
 
 
+######### Analizar para serie Lynx ###
+lynx=lynx
+lynx
+autoplot(lynx)
+
+t=time(lynx)
+
+t=as.numeric(t) ### es bueno no tener tiempo como time series
+lynx_num=as.numeric(lynx) ## para que en data frame no quede como serie
+t2=t^2
+
+### crear data frame que los datos no queden como series de tiempo para facilitar prediccion
+
+datos=data.frame(t=t)
+datos$lynx_num=lynx_num
+datos$t2=t2
+
+### ajustar modelo 
+
+mod=lm(data=datos, lynx_num~t+t2) ## ajustar
+mod2=lm(data=datos, lynx_num~t) ## ajustarmodelo
+
+summary(mod)
+
+plot(lynx)
+lines(t,mod$fitted.values, col="red", lwd=2)
+
+AIC(mod)
+AIC(mod2)
+BIC(mod)
+BIC(mod2)
+
+library(Metrics)
+
+y= lynx
+y_pred=mod$fitted.values
+y_pred2=mod2$fitted.values
+
+mape(y,y_pred)
+mape(y,y_pred2)
+
+mae(y,y_pred)
+mae(y,y_pred2)
