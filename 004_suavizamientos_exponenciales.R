@@ -1,10 +1,13 @@
-library(fpp2)
-library(forecast)
+library(fpp2) ## datos
+library(forecast) ### suavizamientos exponenciuales
+library(smooth) #medias moviles
 
 
 #### cargar serie de tiempo ###
 
 serie=oil ### ya esta como serie de tiempo
+
+datos=c(serie,1,3,4)
 
 autoplot(serie)
 ###es una serie que parece tener tendencia, no es claro su patron, se recomendaria ajustar modelo con y sin tendencia y comparar.
@@ -48,3 +51,32 @@ m_holt=holt(serie, h=12, level=c(0.95, 0.85))
 summary(m_holt)
 
 autoplot(m_holt)
+
+
+######## austourists
+
+frequency(austourists)
+autoplot(austourists)
+
+mod1=sma_old(austourists)
+mod2=ses(austourists)
+mod3=holt(austourists)
+mod4=hw(austourists, seasonal='additive')
+mod5=hw(austourists, seasonal='multiplicative')
+
+
+summary(mod1)
+mod1$s2 ### sacar sigma cuadrado varianza del error
+mod2$model$sigma2
+mod3$model$sigma2
+mod4$model$sigma2
+mod5$model$sigma2
+
+autoplot(mod5)
+autoplot(mod2)
+
+summary(mod4)
+summary(mod5)
+
+
+
