@@ -42,5 +42,30 @@ Pacf(ts_cut_dif)
 modelo1=Arima(ts_cut, order=c(3,2,0))
 summary(modelo1)
 
+###AIC 517.31
+###RMSE 0.93
+####mae 0.73
+
+modelo2=auto.arima(ts_cut,trace=T, stepwise = F, seasonal=F)
+summary(modelo2)
+
+checkresiduals(modelo1)
+
+end(ts_cut)
+
+pronosticos=forecast(modelo1, h=12,level=c(0.90,0.80))
+solo_pron=pronosticos$mean
 
 
+library(Metrics)
+rmse(ts_cut, modelo1$fitted)
+
+
+#### para desempeño evaluación
+### datos recortados
+
+ts_no_cut=window(ts_flujo, start=c(2006,1))
+
+rmse(ts_no_cut, solo_pron)
+mean(ts_no_cut)
+13/478
