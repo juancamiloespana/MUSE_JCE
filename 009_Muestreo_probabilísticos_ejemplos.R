@@ -24,17 +24,16 @@ set.seed(123) ## para que los calculos sean iguales
 
 ### para media ####
 n_sd=2  ## Número de desviaciones para una probabilidad de 95%
+
+## 99%  2.58
+## 95%  1.96
+## 90%  1.64
+
 s=300  ## se conoce teórica o por un piloto
 B=25 ## ##Margen de error máximo aceptable (está en millones) lo define el investigador
 D=(B/n_sd)^2
+
 n=(N*s^2)/(((N-1)*D)+s^2)  ## Muestra con población 
-
-
-#### para total poblacional
-
-B_t=2000000 ## diferencia mínima tolerable para total poblacional
-D_P=(B_t/(n_sd*N))^2
-n_TP= (N*s^2)/(((N-1)*D_P)+s^2)
 
 
 
