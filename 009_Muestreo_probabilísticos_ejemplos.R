@@ -49,6 +49,12 @@ attach(muestra)
 estima <- muestra[,c("Income", "Employees", "Taxes")] # base con las columnas para hacer estimación
 A=E.SI(N,n,estima)## función para hacer estimaciones MAS sin reemplazo del total con con HT
 
+sum(BigLucy$Income) ### parámetro poblacional, normalmente no se conoce
+
+media_income=A[1,2]/N  ###estimador muestral
+
+mean(BigLucy$Income) ### parametro poblacional media, real, normalmente no se conoce
+
 ###el argumento DEFF es  Design effect es la relación entre la varianza obtenido por el muestreo actual y el que se obtendría con
 
 
@@ -110,6 +116,7 @@ aS=N3/N
 
 a=c(aB,aM,aS)
 
+
 #####  la varianza muestral de cada estrato teórica o por piloto
 varB=143000 ### calcular desv muestral para estrato Big
 varM=17000 ### calcular desv muestral para estrato Big
@@ -134,15 +141,16 @@ n2 <- round(n*aM)
 n3 <- round(n* aS)
 nst <- c(n1,n2,n3)
 
+
 sam <- S.STSI(Level, Nst, nst)
 muestra <- BigLucy[sam,]
 attach(muestra)
 table(muestra$Level) ## para verificar las muestra que calcule
 
 
-estima <- data.frame(Income, Employees, Taxes)
+estima <- data.frame(Income, Employees, Taxes) ## suponer que son datos recolectados en la muestra
 E.STSI(Level, Nst, nst, estima)
-
+##3 Level debe ser de la muestra
 
 #######################################  
 ##### 4. Muestreo por conglomerado
@@ -160,9 +168,12 @@ U <- levels(BigLucy$Zone) ## UPM, es la lista de conglomerados
 
 N <- length(U)  ##Número de conglomerados
 
+Mi=table(BigLucy$Zone) ## tamaño de población de cada conglomerado
+
 n <- 10 ## Número de conglomerados en muestra para piloto
 
-Mi=table(BigLucy$Zone)
+### n=37 para repetir procedimiento después de calculo de muestra
+
 
 #### extraer muestra de conglomerados ###
 
@@ -219,6 +230,8 @@ D=(B^2)*(Mbarra^2)/4
 n=(N*sr_2)/(N*D +sr_2)
 
 
+######### despues de obtener el tamaño muestral se repite el procedimiento para el número de conglomerados identificados.
+
 
 
 #######################################  
@@ -234,10 +247,10 @@ table(Lucy$Zone)
 
 U=levels(Lucy$Zone)
 N=length(U)
-n=4
+n=4 ### calcular como se hace en conglomerado
 
 set.seed(987)
-samc=sample(N,n)
+samc=S.SI(N,n)
 
 muestrac=U[samc]
 
@@ -251,6 +264,8 @@ M2 <- dim(Lucy2)[1]
 M3 <- dim(Lucy3)[1]
 M4 <- dim(Lucy4)[1]
 
+
+
 prop_mas= 0.2### se asigno arbitrariamente, se debería calcular por mas en cada UPM
 
 m1=floor(M1*prop_mas)
@@ -263,10 +278,10 @@ mi=c(m1,m2,m3,m4)
 
 sum(mi) ### total de unidades secundarias en muestra
 
-sam1 <- sample(M1,m1)
-sam2 <- sample(M2,m2)
-sam3 <- sample(M3,m3)
-sam4 <- sample(M4,m4)
+sam1 <- S.SI(M1,m1)
+sam2 <- S.SI(M2,m2)
+sam3 <- s.SI(M3,m3)
+sam4 <- S.SI(M4,m4)
 
 muestra1 <- Lucy1[sam1,]
 muestra2 <- Lucy2[sam2,]
