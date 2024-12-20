@@ -142,6 +142,7 @@ n3 <- round(n* aS)
 nst <- c(n1,n2,n3)
 
 
+
 sam <- S.STSI(Level, Nst, nst)
 muestra <- BigLucy[sam,]
 attach(muestra)
