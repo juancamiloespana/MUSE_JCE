@@ -25,7 +25,7 @@ plot(decompose(serie))
 
 ### es una serie estacionaria entonces medias moviles funciona bien
 
-model_mm=sma_old(serie,h=10,interval="p", level=0.95, silent = F)
+model_mm=sma_old(serie,h=2,interval="p", level=0.95, silent = F)
 summary(model_mm)
 model_mm$forecast ### muestra valores pronosticos, inicia un periodo despupes a los datos reales
 model_mm$lower ### intervalo de confianza inferior
