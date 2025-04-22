@@ -3,6 +3,7 @@
 library(fpp2) ### para los datos oil
 library(forecast) ### paquete con los modelos ses, holt, y hw
 
+library(graphics)
 data(oil) ### serie del paquete fpp2 quede en memoria
 
 ### si los datos están en formato serie de tiempo, no se necesitan configuración con la función TS
@@ -40,8 +41,23 @@ mod_ses$fitted ## predicciones en las mismas fechas de los datos originales
 
 
 plot(mod_ses) ## para sacar el grafico
+lines(mod_ses$fitted, col="red", lty=2) ### para agregar valores ajustados y comparar con los reales
+
+
 
 
 library(smooth)
 mod=sma_old(oil, silent=F, order=5)
 summary(mod)
+
+
+mod_ses=ses(oil, h=20, level=c(0.60), alpha=0.9)
+plot(mod_ses) ## para sacar el grafico
+lines(mod_ses$fitted, col="red", lty=2) 
+
+
+
+summary(mod_ses)
+
+
+
