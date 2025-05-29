@@ -2,8 +2,8 @@
 
 ### librerias
 
-library(forecast)
-library(urca)
+library(forecast) ## los graficos los modelos
+library(urca) ### para prueba kpss
 
 ### cargar datos ####
 
@@ -38,7 +38,7 @@ Acf(ts_flujo, lag.max=60)
 
 ###### diferenciaciones no estacionales
 
-D=nsdiffs(ts_flujo) ## para confirmar que no tiene estacionalidad
+D=nsdiffs(ts_flujo_train) ## para confirmar que no tiene estacionalidad
 
 d= ndiffs(ts_flujo_train)
 
@@ -66,8 +66,41 @@ Pacf(ts_diff)
 modelo_320= Arima(ts_flujo_train, order=c(3,2,0))
 summary(modelo_320)
 
-modelo_auto=auto.arima(ts_flujo_train,stepwise = F, trace=T, seasonal=F, approximation=F, max.order= 8 )
+### AIC 515.57
+### MAE 0.73
+
+modelo_auto=auto.arima(ts_flujo_train,stepwise = F, trace=T, seasonal=F, approximation=F, max.order= 8, ic="aic")
+
+summary(modelo_auto)
+
+### AIC 515.21
+##mae 0.73
+
+checkresiduals(modelo_320)
+checkresiduals(modelo_auto)
+
+### se selecciona el modelo de procedimiento manual que tiene casi el mismo desempeño que el automatico
+
+#### pronosticos diciembre de 2006
+
+prons=forecast(modelo_320,h= 13, level=c(0.8,0.9))
+
+plot(prons)
+### desempeño en entrenamiento: indicadores del summmary, que están basados en el error
+### RMSE= 0.9272147
+### MAE: 0.7307052
 
 
+### desempeño en evaluación
+
+ts_flujo_test
+
+pron_test=forecast(modelo_320,h=12) ### pronostico de fechas que coincidan con datos de test
+
+library(Metrics) ### para indicadores
 
 
+mae(ts_flujo_test, pron_test$mean)
+rmse(ts_flujo_test, pron_test$mean)
+
+mean(ts_flujo)
