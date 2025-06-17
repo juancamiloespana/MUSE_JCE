@@ -7,12 +7,15 @@
 ##Estrategia de muestreo: Estimador de HT aplicado a un MAS sin reemplazo
 
 
-install.packages("TeachingSampling")
+#install.packages("TeachingSampling")
 library(TeachingSampling) ### Librería con datos ejemplos Marco y Lucy
 
 
 data(BigLucy) ##Base de datos, marco de muestreo.
 attach(BigLucy) 
+
+
+
 
 N <- dim(BigLucy)[1]  ##Tamaño población
 set.seed(123) ## para que los calculos sean iguales
@@ -28,6 +31,7 @@ n_sd=2  ## Número de desviaciones para una probabilidad de 95%
 ## 95%  1.96
 ## 90%  1.64
 
+
 s=300  ## se conoce teórica o por un piloto
 B=25 ## ##Margen de error máximo aceptable (está en millones) lo define el investigador
 D=(B/n_sd)^2
@@ -40,6 +44,7 @@ n=(N*s^2)/(((N-1)*D)+s^2)  ## Muestra con población
 
 n=round(n,0)
 
+set.seed(123)
 sam <- S.SI(N,n) ## función para extraer MAS sin reemplazo
 muestra <- BigLucy[sam,]   ## base de datos con la muestra
 attach(muestra)
@@ -58,6 +63,17 @@ mean(BigLucy$Income) ### parametro poblacional media, real, normalmente no se co
 ###el argumento DEFF es  Design effect es la relación entre la varianza obtenido por el muestreo actual y el que se obtendría con
 
 
+### análisis despues de datos
+## suponga que recolectó una muestra de 300 y tome la desviación muestral, calcule el margen de error real
+
+s=sd(muestra$Income)
+n=300
+
+B = n_sd * s * sqrt((N/n - 1) / (N - 1))  ### de la ecuación de n despejando B
+
+
+
+
 
 ###########################################
 ## 2. Muestreo Aleatorio Sistemático ####
@@ -71,6 +87,7 @@ set.seed(123)
 N <- dim(BigLucy)[1]
 n=572 ## según MAS el  mismo del anterior
 a <- floor(N/n) ## definir número de grupos en los que se divide la población
+
 
 
 sam <- S.SY(N, a) ## función para extracción de muestra
